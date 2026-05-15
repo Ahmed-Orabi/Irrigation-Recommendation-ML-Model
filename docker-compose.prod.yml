@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  agrivision-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: agrivision-ml:production
+    container_name: agrivision_ml_api_prod
+    ports:
+      - "8000:8000"
+    
+    # PROD FEATURE 1: If the server reboots or crashes, automatically start the API back up
+    restart: always 
+    
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ENVIRONMENT=production
+      # - MLFLOW_TRACKING_URI=http://your-mlflow-server:5000 # (Optional for future use)
+    
+    # PROD FEATURE 2: Log Rotation
+    # Without this, Docker logs will grow forever until your EC2 runs out of storage space!
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m" # Max size of a single log file
+        max-file: "3"   # Keep only the last 3 files, delete older ones
+        
+    # PROD FEATURE 3: Custom Network (Great for adding databases later)
+    networks:
+      - agrivision-net
+
+networks:
+  agrivision-net:
+    driver: bridge
