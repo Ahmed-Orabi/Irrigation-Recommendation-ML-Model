@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  agrivision-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: agrivision-ml:latest
+    container_name: agrivision_ml_api
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1 # Ensures Python terminal logs print instantly to Docker
+      # - ENVIRONMENT=production (You can add your environment variables here later)
